@@ -15,8 +15,15 @@
 				$teamb=$_POST['teamb'];
 				$twint=$_POST['twint'];
 				$batball=$_POST['batball'];
+				if ($batball=='bat') {
+					$res=1;
+				}
+				elseif ($batball=='ball') {
+					$res=0;
+				}
+				$cookie=$twint.'i1'.$res;
 				$dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
-				mysqli_query($dbase,"INSERT INTO matches (`teama`,`teamb`,`runteama`,`runteamb`,`overteama`,`overteamb`,`wicteama`,`wicteamb`) VALUES ('$teama','$teamb','0','0','0.0','0.0','0','0')");
+				mysqli_query($dbase,"INSERT INTO matches (`teama`,`teamb`,`runteama`,`runteamb`,`overteama`,`overteamb`,`wicteama`,`wicteamb`,`completed`,`news`) VALUES ('$teama','$teamb','0','0','0.0','0.0','0','0','0','$cookie')");
 				// if ($twint==$teama) {
 				// 	if ($batball=='bat') {
 				// 		$cookie=$teama;
@@ -37,13 +44,7 @@
 				// 		$res='l';
 				// 	}
 				// }
-				if ($batball=='bat') {
-					$res=1;
-				}
-				elseif ($batball=='ball') {
-					$res=0;
-				}
-				setcookie('matchStarted',$twint.'i1'.$res,time()+2*60*60);
+				setcookie('matchStarted',$cookie,time()+2*60*60);
 				header('Location:admin.php');
 			}
 		}

@@ -87,7 +87,7 @@
 			}
 			mysqli_query($dbase,"UPDATE `matches` SET `runteama`='$runs' WHERE `matchid`='$matchid' ");
 			mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
-			if ($over==12.0 || $wicket==10) {
+			if (($over==12.0 || $wicket==10) && $inn=='i1') {
 				setcookie('matchStarted',$twint.'i2'.$res,time()+60*60);
 				header("Location:admin.php");
 			}
