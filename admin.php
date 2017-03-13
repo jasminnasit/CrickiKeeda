@@ -12,66 +12,79 @@
 	{
 		$matchid=$_COOKIE['adminbro'];
 		$dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
+		$twint=substr($_COOKIE['matchStarted'],0,-3);
+		$inn=substr($_COOKIE['matchStarted'],-3,-1);
+		$res=substr($_COOKIE['matchStarted'], -1);
 		$teams=mysqli_query($dbase,"SELECT `teama`,`teamb` FROM `matches` WHERE matchid='$matchid'");
 		$teams=mysqli_fetch_assoc($teams);
 		$teamb=$teams['teamb'];
 		$teama=$teams['teama'];
-		$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteama` FROM `matches` WHERE `matchid`='$matchid'"));
-		$runs=$runs['runteama'];
-		$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteamb` FROM `matches` WHERE `matchid`='$matchid'"));
-		$over=$over['overteamb'];
-		$wicket=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `wicteama` FROM `matches` WHERE `matchid`='$matchid'"));
-		$wicket=$wicket['wicteama'];
+		if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
+			if ($inn=='i1' ) {
+				$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteama` FROM `matches` WHERE `matchid`='$matchid'"));
+				$runs=$runs['runteama'];
+				$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteamb` FROM `matches` WHERE `matchid`='$matchid'"));
+				$over=$over['overteamb'];
+				$wicket=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `wicteama` FROM `matches` WHERE `matchid`='$matchid'"));
+				$wicket=$wicket['wicteama'];
+			}
+			else if ($inn=='i2') {
+				$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteamb` FROM `matches` WHERE `matchid`='$matchid'"));
+				$runs=$runs['runteamb'];
+				$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteama` FROM `matches` WHERE `matchid`='$matchid'"));
+				$over=$over['overteama'];
+				$wicket=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `wicteamb` FROM `matches` WHERE `matchid`='$matchid'"));
+				$wicket=$wicket['wicteamb'];
+			}
+		}
+		elseif (($twint==$teama && $res==0) || ($twint==$teamb && $res==1)) {
+			if ($inn=='i1' ) {
+				$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteamb` FROM `matches` WHERE `matchid`='$matchid'"));
+				$runs=$runs['runteamb'];
+				$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteama` FROM `matches` WHERE `matchid`='$matchid'"));
+				$over=$over['overteama'];
+				$wicket=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `wicteamb` FROM `matches` WHERE `matchid`='$matchid'"));
+				$wicket=$wicket['wicteamb'];
+			}
+			else if ($inn=='i2') {
+				$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteama` FROM `matches` WHERE `matchid`='$matchid'"));
+				$runs=$runs['runteama'];
+				$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteamb` FROM `matches` WHERE `matchid`='$matchid'"));
+				$over=$over['overteamb'];
+				$wicket=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `wicteama` FROM `matches` WHERE `matchid`='$matchid'"));
+				$wicket=$wicket['wicteama'];
+			}
+		}
 		if (isset($_POST['update'])) {
 			$run=$_POST['runs'];
 			$del=$_POST['del'];
-			$twint=substr($_COOKIE['matchStarted'],0,-2);
-			$inn=substr($_COOKIE['matchStarted'],-2);
-			if ($twint==$teama) {
-				if ($inn='i1') {
-					if ($del=='fair') {
-						$runs+=$run;
-						if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
-							$over+=0.5;
-						}
-						else{
-							$over+=0.1;
-						}
-					}
-					elseif ($del=='wide' || $del=='noball') {
-						$runs+=($run+1);
-					}
-					elseif($del=='wicket'){
-						$runs+=$run;
-						$wicket+=1;
-						if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
-							$over+=0.5;
-						}
-						else{
-							$over+=0.1;
-						}
-						mysqli_query($dbase,"UPDATE `matches` SET `wicteama`='$wicket' WHERE `matchid`='$matchid' ");
-					}
-					mysqli_query($dbase,"UPDATE `matches` SET `runteama`='$runs' WHERE `matchid`='$matchid' ");
-					mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
+			if ($del=='fair') {
+				$runs+=$run;
+				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
+					$over+=0.5;
 				}
 				else{
-					$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteamb` FROM `matches` WHERE `matchid`='$matchid'"));
-					$runs=$runs['runteamb'];
-					$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteama` FROM `matches` WHERE `matchid`='$matchid'"));
-					$over=$over['overteama'];
-					if ($del=='fair') {
-						$runs+=$run;
-						if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
-							$over+=0.5;
-						}
-						else{
-							$over+=0.1;
-						}
-					}
-					mysqli_query($dbase,"UPDATE `matches` SET `runteamb`='$runs' WHERE `matchid`='$matchid' ");
-					mysqli_query($dbase,"UPDATE `matches` SET `overteama`='$over' WHERE `matchid`='$matchid' ");
+					$over+=0.1;
 				}
+			}
+			elseif ($del=='wide' || $del=='noball') {
+				$runs+=($run+1);
+			}
+			elseif($del=='wicket'){
+				$runs+=$run;
+				$wicket+=1;
+				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
+					$over+=0.5;
+				}
+				else{
+					$over+=0.1;
+				}
+				mysqli_query($dbase,"UPDATE `matches` SET `wicteama`='$wicket' WHERE `matchid`='$matchid' ");
+			}
+			mysqli_query($dbase,"UPDATE `matches` SET `runteama`='$runs' WHERE `matchid`='$matchid' ");
+			mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
+			if ($over==12.0 || $wicket==10) {
+				setcookie('matchStarted',$twint.'i2'.$res,time()+60*60);
 			}
 		}
 	}
@@ -94,6 +107,23 @@
 	<div class="myrow">
 		<div class="col-5 col-m-12">
 			<table id="scoreAdminTable">
+				<tr>
+					<td colspan="2">
+						<p>
+							<?php
+								if ($inn=='i1') {
+									if ($res==0) {
+										$result='ball';
+									}
+									else{
+										$result='bat';
+									}
+									echo "$twint won the toss and choose to $result first";
+								}
+							?>
+						</p>
+					</td>
+				</tr>
 				<tr>
 					<td><b>Runs&nbsp: </b></td>
 					<td><b><?php echo $runs ?></b></td>

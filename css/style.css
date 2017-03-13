@@ -183,6 +183,7 @@ span.errorst::after,span.errorstc::after{
 	border: 2px solid white;
 	z-index: 2;
 	box-shadow: 3px 3px 30px #fff;
+	margin-bottom: 20px;
 }
 
 .myrow{
@@ -206,8 +207,8 @@ span.errorst::after,span.errorstc::after{
 
 #scoreAdminTable td{
 	padding: 15px;
-	padding-top: 50px;
-	padding-bottom: 50px;
+	padding-top: 20px;
+	padding-bottom: 20px;
 }
 
 #update{
