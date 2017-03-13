@@ -83,10 +83,45 @@
 				else{
 					$over+=0.1;
 				}
+				
+			}
+			
+
+
+
+
+
+		if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
+			if ($inn=='i1' ) {
+				mysqli_query($dbase,"UPDATE `matches` SET `runteama`='$runs' WHERE `matchid`='$matchid' ");
+				mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
 				mysqli_query($dbase,"UPDATE `matches` SET `wicteama`='$wicket' WHERE `matchid`='$matchid' ");
 			}
-			mysqli_query($dbase,"UPDATE `matches` SET `runteama`='$runs' WHERE `matchid`='$matchid' ");
-			mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
+			else if ($inn=='i2') {
+				mysqli_query($dbase,"UPDATE `matches` SET `runteamb`='$runs' WHERE `matchid`='$matchid' ");
+				mysqli_query($dbase,"UPDATE `matches` SET `overteama`='$over' WHERE `matchid`='$matchid' ");
+				mysqli_query($dbase,"UPDATE `matches` SET `wicteamb`='$wicket' WHERE `matchid`='$matchid' ");
+			}
+		}
+		elseif (($twint==$teama && $res==0) || ($twint==$teamb && $res==1)) {
+			if ($inn=='i1' ) {
+				mysqli_query($dbase,"UPDATE `matches` SET `runteamb`='$runs' WHERE `matchid`='$matchid' ");
+				mysqli_query($dbase,"UPDATE `matches` SET `overteama`='$over' WHERE `matchid`='$matchid' ");
+				mysqli_query($dbase,"UPDATE `matches` SET `wicteamb`='$wicket' WHERE `matchid`='$matchid' ");
+			}
+			else if ($inn=='i2') {
+				mysqli_query($dbase,"UPDATE `matches` SET `runteama`='$runs' WHERE `matchid`='$matchid' ");
+				mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
+				mysqli_query($dbase,"UPDATE `matches` SET `wicteama`='$wicket' WHERE `matchid`='$matchid' ");
+			}
+		}
+
+
+
+
+
+
+
 			if (($over==12.0 || $wicket==10) && $inn=='i1') {
 				setcookie('matchStarted',$twint.'i2'.$res,time()+60*60);
 				header("Location:admin.php");

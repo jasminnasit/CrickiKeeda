@@ -52,4 +52,10 @@ elseif (($twint==$teama && $res==0) || ($twint==$teamb && $res==1)) {
 		$wicket=$wicket['wicteama'];
 	}
 }
+
+if (($over==12.0 || $wicket==10) && $inn=='i1') {
+	$news=$twint.'i2'.$res;
+	mysqli_query($dbase,"UPDATE `matches` SET `news`='$news' WHERE `matchid`='$matchid'");
+	header("Location:index.php");
+}
 ?>
