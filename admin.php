@@ -29,6 +29,8 @@
 				$wicket=$wicket['wicteama'];
 			}
 			else if ($inn=='i2') {
+				$target=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteama` FROM `matches` WHERE `matchid`='$matchid'"));
+				$target=$target['runteama']+1;
 				$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteamb` FROM `matches` WHERE `matchid`='$matchid'"));
 				$runs=$runs['runteamb'];
 				$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteama` FROM `matches` WHERE `matchid`='$matchid'"));
@@ -47,6 +49,8 @@
 				$wicket=$wicket['wicteamb'];
 			}
 			else if ($inn=='i2') {
+				$target=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteamb` FROM `matches` WHERE `matchid`='$matchid'"));
+				$target=$target['runteamb']+1;
 				$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteama` FROM `matches` WHERE `matchid`='$matchid'"));
 				$runs=$runs['runteama'];
 				$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteamb` FROM `matches` WHERE `matchid`='$matchid'"));
@@ -85,6 +89,7 @@
 			mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
 			if ($over==12.0 || $wicket==10) {
 				setcookie('matchStarted',$twint.'i2'.$res,time()+60*60);
+				header("Location:admin.php");
 			}
 		}
 	}
@@ -119,6 +124,9 @@
 										$result='bat';
 									}
 									echo "$twint won the toss and choose to $result first";
+								}
+								else{
+									echo "Target : $target";
 								}
 							?>
 						</p>
