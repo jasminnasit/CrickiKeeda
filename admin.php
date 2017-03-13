@@ -1,6 +1,79 @@
 <?php
-	if (!isset($_COOKIE['adminbro'])) {
+	//error_reporting(~E_ALL);
+	if (!isset($_COOKIE['adminbro'])) 
+	{
 		header('Location:adminl.php');
+	}
+	else if (!isset($_COOKIE['matchStarted']))
+	{
+		header('Location:startMatch.php');
+	}
+	else
+	{
+		$matchid=$_COOKIE['adminbro'];
+		$dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
+		$teams=mysqli_query($dbase,"SELECT `teama`,`teamb` FROM `matches` WHERE matchid='$matchid'");
+		$teams=mysqli_fetch_assoc($teams);
+		$teamb=$teams['teamb'];
+		$teama=$teams['teama'];
+		$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteama` FROM `matches` WHERE `matchid`='$matchid'"));
+		$runs=$runs['runteama'];
+		$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteamb` FROM `matches` WHERE `matchid`='$matchid'"));
+		$over=$over['overteamb'];
+		$wicket=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `wicteama` FROM `matches` WHERE `matchid`='$matchid'"));
+		$wicket=$wicket['wicteama'];
+		if (isset($_POST['update'])) {
+			$run=$_POST['runs'];
+			$del=$_POST['del'];
+			$twint=substr($_COOKIE['matchStarted'],0,-2);
+			$inn=substr($_COOKIE['matchStarted'],-2);
+			if ($twint==$teama) {
+				if ($inn='i1') {
+					if ($del=='fair') {
+						$runs+=$run;
+						if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
+							$over+=0.5;
+						}
+						else{
+							$over+=0.1;
+						}
+					}
+					elseif ($del=='wide' || $del=='noball') {
+						$runs+=($run+1);
+					}
+					elseif($del=='wicket'){
+						$runs+=$run;
+						$wicket+=1;
+						if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
+							$over+=0.5;
+						}
+						else{
+							$over+=0.1;
+						}
+						mysqli_query($dbase,"UPDATE `matches` SET `wicteama`='$wicket' WHERE `matchid`='$matchid' ");
+					}
+					mysqli_query($dbase,"UPDATE `matches` SET `runteama`='$runs' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
+				}
+				else{
+					$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteamb` FROM `matches` WHERE `matchid`='$matchid'"));
+					$runs=$runs['runteamb'];
+					$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteama` FROM `matches` WHERE `matchid`='$matchid'"));
+					$over=$over['overteama'];
+					if ($del=='fair') {
+						$runs+=$run;
+						if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
+							$over+=0.5;
+						}
+						else{
+							$over+=0.1;
+						}
+					}
+					mysqli_query($dbase,"UPDATE `matches` SET `runteamb`='$runs' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `overteama`='$over' WHERE `matchid`='$matchid' ");
+				}
+			}
+		}
 	}
 ?>
 <!DOCTYPE html>
@@ -23,15 +96,15 @@
 			<table id="scoreAdminTable">
 				<tr>
 					<td><b>Runs&nbsp: </b></td>
-					<td><b>0</b></td>
+					<td><b><?php echo $runs ?></b></td>
 				</tr>
 				<tr>
 					<td><b>Overs&nbsp: </b></td>
-					<td><b>0.0&nbsp/&nbsp12.0</b></td>
+					<td><b><?php echo $over ?>&nbsp/&nbsp12.0</b></td>
 				</tr>
 				<tr>
 					<td><b>Wickets&nbsp: </b></td>
-					<td><b>0&nbsp/&nbsp10</b></td>
+					<td><b><?php echo $wicket ?>&nbsp/&nbsp10</b></td>
 				</tr>
 			</table>
 		</div>
@@ -41,7 +114,7 @@
 					<tr>
 						<td><label>Runs&nbsp: </label></td>
 						<td>
-							<input type="radio" name="runs" value="0">&nbsp+0
+							<input type="radio" name="runs" value="0" checked>&nbsp+0
 							<input type="radio" name="runs" value="1">&nbsp+1
 							<input type="radio" name="runs" value="2">&nbsp+2
 							<input type="radio" name="runs" value="3">&nbsp+3<br>
@@ -54,7 +127,7 @@
 					<tr>
 						<td><label>Delivery&nbsp: </label></td>
 						<td>
-							<input type="radio" name="del" value="fair">&nbspFair&nbsp<br>
+							<input type="radio" name="del" value="fair" checked>&nbspFair&nbsp<br>
 							<input type="radio" name="del" value="wide">&nbspWide&nbsp
 							<input type="radio" name="del" value="noball">&nbspNo&nbspBall&nbsp<br>
 							<input type="radio" name="del" value="wicket">&nbspWicket&nbsp

@@ -2,6 +2,42 @@
 	if (!isset($_COOKIE['adminbro'])) {
 		header('Location:adminl.php');
 	}
+	else
+	{
+		if (isset($_COOKIE['matchStarted'])) {
+			header('Location:admin.php');
+		}
+		else
+		{
+			if (isset($_POST['submitMatch']))
+			{
+				$teama=$_POST['teama'];
+				$teamb=$_POST['teamb'];
+				$twint=$_POST['twint'];
+				$batball=$_POST['batball'];
+				$dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
+				mysqli_query($dbase,"INSERT INTO matches (`teama`,`teamb`,`runteama`,`runteamb`,`overteama`,`overteamb`,`wicteama`,`wicteamb`) VALUES ('$teama','$teamb','0','0','0.0','0.0','0','0')");
+				if ($twint==$teama) {
+					if ($batball=='bat') {
+						$cookie=$teama;
+					}
+					else{
+						$cookie=$teamb;
+					}
+				}
+				else{
+					if ($batball=='bat') {
+						$cookie=$teamb;
+					}
+					else{
+						$cookie=$teama;
+					}
+				}
+				setcookie('matchStarted',$cookie.'i1',time()+2*60*60);
+				header('Location:admin.php');
+			}
+		}
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -23,7 +59,7 @@
 		<table id="startTable">
 			<tr>
 				<td class="starttd">
-					<select class="teamc" id="teama">
+					<select class="teamc" name="teama" id="teama">
 						<option value="Team1">Team 1</option>
 						<option value="Team2">Team 2</option>
 						<option value="Team3">Team 3</option>
@@ -39,7 +75,7 @@
 					</select>
 				</td>
 				<td class="starttd">
-					<select class="teamc" id="teamb">
+					<select class="teamc" name="teamb" id="teamb">
 						<option value="Team1">Team 1</option>
 						<option value="Team2">Team 2</option>
 						<option value="Team3">Team 3</option>
@@ -55,28 +91,28 @@
 					</select>
 				</td>
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td colspan="2" class="starttd">
 					<span class='errorst'>Select Wining Team</span>
 				</td>
-			</tr>
+			</tr> -->
 			<tr>
 				<td class="starttd"><p>Which Team Won Toss?</p></td>
 				<td class="starttd">
-					<input type="radio" name="twint" id="teamai" value="team1" checked><span id="teamac">Team1</span><br>
-					<input type="radio" name="twint" id="teambi" value="team12"><span id="teambc">Team12</span>
+					<input type="radio" name="twint" id="teamai" value="Team1" checked><span id="teamac">Team1</span><br>
+					<input type="radio" name="twint" id="teambi" value="Team12"><span id="teambc">Team12</span>
 				</td>
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td colspan="2" class="starttd">
 					<span class='errorstc'>Wining Team Decision?</span>
 				</td>
-			</tr>
+			</tr> -->
 			<tr>
 				<td class="starttd"><p>What Toss winning Team choose?</p></td>
 				<td class="starttd">
-					<input type="radio" name="batball" value="Bat" checked>Bat<br>
-					<input type="radio" name="batball" value="Ball">Ball
+					<input type="radio" name="batball" value="bat" checked>Bat<br>
+					<input type="radio" name="batball" value="ball">Ball
 				</td>
 			</tr>
 			<tr>

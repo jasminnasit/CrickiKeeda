@@ -3,7 +3,12 @@
 	$auname='';
 	if (isset($_COOKIE['adminbro'])) 
 	{
-		header('Location:admin.php');
+		if (isset($_COOKIE['matchStarted'])) {
+			header('Location:admin.php');	
+		}
+		else{
+			header('Location:startMatch.php');
+		}
 	}
 	else
 	{
