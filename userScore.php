@@ -1,10 +1,6 @@
 <?php
-$dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
-$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `matchid` FROM `matches` WHERE `completed`='0'"));
-$matchid=$matchid['matchid'];
 $news=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `news` FROM `matches` WHERE `matchid`='$matchid'"));
 $news=$news['news'];
-
 $twint=substr($news,0,-3);
 $inn=substr($news,-3,-1);
 $res=substr($news, -1);

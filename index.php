@@ -1,10 +1,38 @@
 <?php
-require_once ("userScore.php");
-$page = $_SERVER['PHP_SELF'];
-$sec = "10";
-if (!isset($_COOKIE['matchno'])) {
-	setcookie('matchno',0,time()+$sec+1);
+$dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
+$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `matchid` FROM `matches` WHERE `completed`='0'"));
+$matchid=$matchid['matchid'];
+if ($matchid=='') 
+{
+	$print1='Try Again Later!';
+	$teamName='No Live Matches!';	
+	$runs='-';
+	$over='-';
+	$wicket='-';
 }
+else
+{
+	require_once ("userScore.php");
+	if ($inn=='i1') 
+	{
+		if ($res==0) 
+		{
+			$result='ball';
+		}
+		else
+		{
+			$result='bat';
+		}
+		$print1="$twint won the toss and choose to $result first\n";
+	}
+	else
+	{
+		$print1="Target : $target";
+	}
+	$teamName="$teama VS $teamb";
+}
+$page = $_SERVER['PHP_SELF'];
+$sec = "30";
 ?>
 <!DOCTYPE html>
 <html>
@@ -21,22 +49,9 @@ if (!isset($_COOKIE['matchno'])) {
 	<div class="userBlack"></div>
 	<h1 class="title">CrickiKeeda Score Table</h1>
 	<div class="startContainer">
-		<h2 class="matchTeam"><?php echo "$teama VS $teamb"; ?></h2>
+		<h2 class="matchTeam"><?php echo $teamName; ?></h2>
 		<h2 class="matchTeam2">
-			<?php
-					if ($inn=='i1') {
-						if ($res==0) {
-							$result='ball';
-						}
-						else{
-							$result='bat';
-						}
-					echo "$twint won the toss and choose to $result first\n";
-					}
-					else{
-						echo "Target : $target";
-					}
-				?>
+			<?php echo $print1; ?>
 		</h2>
 		<table id="userScoreTable">
 			<tr>
@@ -50,6 +65,13 @@ if (!isset($_COOKIE['matchno'])) {
 			<tr>
 				<td>Wicket : </td>
 				<td><?php echo $wicket; ?>/10</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<form action="index.php" method="post">
+					<input type="submit" name="scoreup" class="submitb" value="Refresh" style="background-color: rgba(0,0,0,0.8);">
+				</form>
+				</td>
 			</tr>
 		</table>
 	</div>
