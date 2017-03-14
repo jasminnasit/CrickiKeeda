@@ -6,6 +6,7 @@ if ($matchid=='')
 {
 	$print1='Try Again Later!';
 	$teamName='No Live Matches!';	
+	$batting="";
 	$runs='-';
 	$over='-';
 	$wicket='-';
@@ -24,10 +25,12 @@ else
 			$result='bat';
 		}
 		$print1="$twint won the toss and choose to $result first\n";
+		$batting="Now Batting : $teami1 Inn:1";
 	}
 	else
 	{
 		$print1="Target : $target";
+		$batting="Now Batting : $teami2 Inn:2";
 	}
 	$teamName="$teama VS $teamb";
 }
@@ -53,6 +56,7 @@ $sec = "30";
 		<h2 class="matchTeam2">
 			<?php echo $print1; ?>
 		</h2>
+		<h2 class="matchTeam3"><?php echo $batting; ?></h2>
 		<table id="userScoreTable">
 			<tr>
 				<td>Runs : </td>

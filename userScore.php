@@ -10,6 +10,8 @@ $teamb=$teams['teamb'];
 $teama=$teams['teama'];
 if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
 	if ($inn=='i1' ) {
+		$teami1=$teama;
+		$teami2=$teamb;
 		$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteama` FROM `matches` WHERE `matchid`='$matchid'"));
 		$runs=$runs['runteama'];
 		$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteamb` FROM `matches` WHERE `matchid`='$matchid'"));
@@ -18,6 +20,8 @@ if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
 		$wicket=$wicket['wicteama'];
 	}
 	else if ($inn=='i2') {
+		$teami1=$teama;
+		$teami2=$teamb;
 		$target=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteama` FROM `matches` WHERE `matchid`='$matchid'"));
 		$target=$target['runteama']+1;
 		$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteamb` FROM `matches` WHERE `matchid`='$matchid'"));
@@ -30,6 +34,8 @@ if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
 }
 elseif (($twint==$teama && $res==0) || ($twint==$teamb && $res==1)) {
 	if ($inn=='i1' ) {
+		$teami1=$teamb;
+		$teami2=$teama;
 		$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteamb` FROM `matches` WHERE `matchid`='$matchid'"));
 		$runs=$runs['runteamb'];
 		$over=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `overteama` FROM `matches` WHERE `matchid`='$matchid'"));
@@ -38,6 +44,8 @@ elseif (($twint==$teama && $res==0) || ($twint==$teamb && $res==1)) {
 		$wicket=$wicket['wicteamb'];
 	}
 	else if ($inn=='i2') {
+		$teami1=$teamb;
+		$teami2=$teama;
 		$target=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteamb` FROM `matches` WHERE `matchid`='$matchid'"));
 		$target=$target['runteamb']+1;
 		$runs=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runteama` FROM `matches` WHERE `matchid`='$matchid'"));

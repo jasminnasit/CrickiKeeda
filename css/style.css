@@ -230,6 +230,16 @@ span.errorst::after,span.errorstc::after{
 	opacity: 0.9;
 }
 
+.matchTeam3{
+	margin-top: 10px;
+	z-index: 2;
+	color: white;
+	font-size: 20px;
+	text-align: center;
+	width: 100%;
+	opacity: 0.9;
+}
+
 
 /*admin edit*/
 @media(min-width: 967px)
@@ -267,8 +277,8 @@ span.errorst::after,span.errorstc::after{
 
 #scoreAdminTable td{
 	padding: 15px;
-	padding-top: 20px;
-	padding-bottom: 20px;
+	padding-top: 17px;
+	padding-bottom: 17px;
 }
 
 #update{
@@ -322,9 +332,10 @@ span.errorst::after,span.errorstc::after{
 	border: 2px solid white;
 	position: absolute;
 	z-index: 2;
-	top: 25vh;
+	top: 20vh;
 	left: 25%;
 	box-shadow: 3px 3px 30px #fff;
+	margin-bottom: 20px;
 }
 
 #startTable{
@@ -392,7 +403,7 @@ td.starttd{
 }
 
 #scoreAdminTable td{
-	padding: 15px;
+	padding: 5px;
 }
 
 #update{

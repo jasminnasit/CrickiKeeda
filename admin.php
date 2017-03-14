@@ -166,6 +166,18 @@
 		<div class="col-5 col-m-12">
 			<table id="scoreAdminTable">
 				<tr>
+					<td><b>Runs&nbsp: </b></td>
+					<td><b><?php echo $runs ?></b></td>
+				</tr>
+				<tr>
+					<td><b>Overs&nbsp: </b></td>
+					<td><b><?php echo $over ?>&nbsp/&nbsp12.0</b></td>
+				</tr>
+				<tr>
+					<td><b>Wickets&nbsp: </b></td>
+					<td><b><?php echo $wicket ?>&nbsp/&nbsp10</b></td>
+				</tr>
+				<tr>
 					<td colspan="2">
 						<p>
 							<?php
@@ -186,16 +198,18 @@
 					</td>
 				</tr>
 				<tr>
-					<td><b>Runs&nbsp: </b></td>
-					<td><b><?php echo $runs ?></b></td>
-				</tr>
-				<tr>
-					<td><b>Overs&nbsp: </b></td>
-					<td><b><?php echo $over ?>&nbsp/&nbsp12.0</b></td>
-				</tr>
-				<tr>
-					<td><b>Wickets&nbsp: </b></td>
-					<td><b><?php echo $wicket ?>&nbsp/&nbsp10</b></td>
+					<td colspan="2">
+						<p>
+							<?php
+								if ($inn=='i1') {
+									echo "Now Batting : $teami1 Inn:1";
+								}
+								else{
+									echo "Now Batting : $teami2 Inn:2";
+								}
+							?>
+						</p>
+					</td>
 				</tr>
 			</table>
 		</div>
