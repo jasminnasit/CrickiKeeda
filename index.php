@@ -4,12 +4,31 @@ $matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `matchid` FROM `matches`
 $matchid=$matchid['matchid'];
 if ($matchid=='') 
 {
-	$print1='Try Again Later!';
-	$teamName='No Live Matches!';	
-	$batting="";
-	$runs='-';
-	$over='-';
-	$wicket='-';
+	$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT max(`matchid`) FROM `matches` WHERE `completed`='1'"));
+	$matchid=$matchid['max(`matchid`)'];
+	if ($matchid=='') {
+		$print1='Try Again Later!';
+		$teamName='No Live Matches!';	
+		$batting="";
+		$runs='-';
+		$over='-';
+		$wicket='-';	
+	}
+	else{
+		$teama=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `teama` FROM `matches` WHERE `matchid`='$matchid'"));
+		$teama=$teama['teama'];
+		$teamb=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `teamb` FROM `matches` WHERE `matchid`='$matchid'"));
+		$teamb=$teamb['teamb'];
+		$teamName="$teama VS $teamb";
+		$news=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `news` FROM `matches` WHERE `matchid`='$matchid'"));;
+		$news=$news['news'];
+		$print1="$news won the match";
+		$batting="";
+		$runs='-';
+		$over='-';
+		$wicket='-';	
+		$sec="60*60";
+	}
 }
 else
 {
@@ -69,6 +88,10 @@ $sec = "30";
 			<tr>
 				<td>Wicket : </td>
 				<td><?php echo $wicket; ?>/10</td>
+			</tr>
+			<tr>
+				<td>This Over : </td>
+				<td><?php echo $lastover; ?></td>
 			</tr>
 			<tr>
 				<td colspan="2">

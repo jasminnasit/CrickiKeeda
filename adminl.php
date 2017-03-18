@@ -18,7 +18,11 @@
 			$apass=$_POST['apass'];
 			if ($auname=='vatjassu' && $apass=='12345') 
 			{
-				setcookie('adminbro',0,time()+5*24*60*60);
+				$dbase=mysqli_connect('localhost','root','','crickikeeda');
+				$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT max(`matchid`) FROM `matches` WHERE `completed`	='1'"));
+				$matchid=$matchid['max(`matchid`)'];
+				echo "<script>alert('$matchid')</script>";
+				setcookie('adminbro',$matchid+1,time()+5*24*60*60);
 				$result="<span class='logged'>Logged in Admin Bro!</span>";
 				header('Location:startMatch.php');
 			}

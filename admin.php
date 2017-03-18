@@ -1,5 +1,8 @@
 <?php
 	//error_reporting(~E_ALL);
+	if (isset($_COOKIE['mistake'])) {
+		echo "<script>confirm('Old Incomplete match was found, You can\'t start new one.Resuming old one')</script>";
+	}
 	if (!isset($_COOKIE['adminbro'])) 
 	{
 		header('Location:adminl.php');
@@ -68,6 +71,8 @@
 				$wicket=$wicket['wicteama'];
 			}
 		}
+		$lastover=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `lastover` FROM `matches` WHERE `matchid`='$matchid'"));
+		$lastover=$lastover['lastover'];
 		if (isset($_POST['update'])) {
 			$run=$_POST['runs'];
 			$del=$_POST['del'];
@@ -75,22 +80,32 @@
 				$runs+=$run;
 				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
 					$over+=0.5;
+					$lastover.="";
 				}
 				else{
 					$over+=0.1;
+					$lastover.="[$run] ";
 				}
 			}
-			elseif ($del=='wide' || $del=='noball') {
+			elseif ($del=='wide') {
 				$runs+=($run+1);
+				$lastover.="[Wd($run)] ";
+
+			}
+			elseif ($del=='noball') {
+				$runs+=($run+1);
+				$lastover.="[Nb($run)] ";
 			}
 			elseif($del=='wicket'){
 				$runs+=$run;
 				$wicket+=1;
 				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
 					$over+=0.5;
+					$lastover.="";
 				}
 				else{
 					$over+=0.1;
+					$lastover.="[W($run)] ";
 				}
 				
 			}
@@ -121,6 +136,7 @@
 			if (($over==12.0 || $wicket==10) && $inn=='i1') {
 				setcookie('matchStarted',$twint.'i2'.$res,time()+60*60);
 				header("Location:admin.php");
+				$lastover="";
 			}
 			else if(($over==12.0 || $wicket==10) && $inn=='i2')
 			{
@@ -135,6 +151,7 @@
 				setcookie('adminbro',$matchid+1,time()+5*22*60*60);
 				setcookie('matchStarted',0,time()-60);
 				header("Location:startMatch.php");
+				$lastover="";
 			}
 			else if(($runs>=$target) && $inn=='i2')
 			{
@@ -143,7 +160,9 @@
 				setcookie('adminbro',$matchid+1,time()+5*22*60*60);
 				setcookie('matchStarted',0,time()-60);
 				header("Location:startMatch.php");
+				$lastover="";
 			}
+			mysqli_query($dbase,"UPDATE `matches` SET `lastover`='$lastover' WHERE `matchid`='$matchid' ");
 		}
 	}
 ?>

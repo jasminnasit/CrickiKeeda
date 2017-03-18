@@ -11,42 +11,35 @@
 		{
 			if (isset($_POST['submitMatch']))
 			{
-				$teama=$_POST['teama'];
-				$teamb=$_POST['teamb'];
-				$twint=$_POST['twint'];
-				$batball=$_POST['batball'];
-				if ($batball=='bat') {
-					$res=1;
-				}
-				elseif ($batball=='ball') {
-					$res=0;
-				}
-				$cookie=$twint.'i1'.$res;
-				$matchid=$_COOKIE['adminbro'];
 				$dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
-				mysqli_query($dbase,"INSERT INTO matches (`matchid`,`teama`,`teamb`,`runteama`,`runteamb`,`overteama`,`overteamb`,`wicteama`,`wicteamb`,`completed`,`news`) VALUES ('$matchid','$teama','$teamb','0','0','0.0','0.0','0','0','0','$cookie')");
-				// if ($twint==$teama) {
-				// 	if ($batball=='bat') {
-				// 		$cookie=$teama;
-				// 		$res='w';
-				// 	}
-				// 	else{
-				// 		$cookie=$teamb;
-				// 		$res='l';
-				// 	}
-				// }
-				// else{
-				// 	if ($batball=='bat') {
-				// 		$cookie=$teamb;
-				// 		$res='w';
-				// 	}
-				// 	else{
-				// 		$cookie=$teama;
-				// 		$res='l';
-				// 	}
-				// }
-				setcookie('matchStarted',$cookie,time()+2*60*60);
-				header('Location:admin.php');
+				$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `matchid` FROM `matches` WHERE `completed`='0'"));
+				$matchid=$matchid['matchid'];
+				if ($matchid!='') {
+					$news=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `news` FROM `matches` WHERE `matchid`='$matchid'"));
+					$news=$news['news'];
+					setcookie('matchStarted',$news,time()+2*60*60);
+					setcookie('mistake','adminBewafa',time()+5);
+					//echo "<script>alert('Old Match was found!Resuming...')</script>";
+					header('Location:admin.php');
+				}
+				else
+				{
+					$teama=$_POST['teama'];
+					$teamb=$_POST['teamb'];
+					$twint=$_POST['twint'];
+					$batball=$_POST['batball'];
+					if ($batball=='bat') {
+						$res=1;
+					}
+					elseif ($batball=='ball') {
+						$res=0;
+					}
+					$cookie=$twint.'i1'.$res;
+					$matchid=$_COOKIE['adminbro'];
+					mysqli_query($dbase,"INSERT INTO matches (`matchid`,`teama`,`teamb`,`runteama`,`runteamb`,`overteama`,`overteamb`,`wicteama`,`wicteamb`,`completed`,`news`) VALUES ('$matchid','$teama','$teamb','0','0','0.0','0.0','0','0','0','$cookie')");
+					setcookie('matchStarted',$cookie,time()+2*60*60);
+					header('Location:admin.php');
+				}
 			}
 		}
 	}

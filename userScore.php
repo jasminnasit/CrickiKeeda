@@ -8,6 +8,8 @@ $teams=mysqli_query($dbase,"SELECT `teama`,`teamb` FROM `matches` WHERE matchid=
 $teams=mysqli_fetch_assoc($teams);
 $teamb=$teams['teamb'];
 $teama=$teams['teama'];
+$lastover=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `lastover` FROM `matches` WHERE `matchid`='$matchid'"));
+$lastover=$lastover['lastover'];
 if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
 	if ($inn=='i1' ) {
 		$teami1=$teama;
