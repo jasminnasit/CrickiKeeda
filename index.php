@@ -97,12 +97,12 @@ $sec = "30";
 			<tr>
 				<td colspan="2">
 				<form action="index.php" method="post">
-					<input type="submit" name="scoreup" class="submitb" value="Refresh" style="background-color: rgba(0,0,0,0.8);">
+					<input type="submit" name="scoreup" class="submitb" value="Refresh" style="background-color: rgba(0,0,0,0.8);" >
 				</form>
 				</td>
 			</tr>
 		</table>
-		<div class="button">Past Scores</div>
+		<div class="button" onclick="location.href='pastScore.php'">Past Scores</div>
 	</div>
 </body>
 </html>

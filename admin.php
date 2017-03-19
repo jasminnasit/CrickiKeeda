@@ -23,6 +23,7 @@
 		$teamb=$teams['teamb'];
 		$teama=$teams['teama'];
 		$target=0;
+		$pastball='';
 		if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
 			if ($inn=='i1' ) {
 				$teami1=$teama;
@@ -74,6 +75,7 @@
 		$lastover=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `lastover` FROM `matches` WHERE `matchid`='$matchid'"));
 		$lastover=$lastover['lastover'];
 		if (isset($_POST['update'])) {
+			setcookie('lastball',"$runs,$over,$wicket,$lastover",time()+10*60);
 			$run=$_POST['runs'];
 			$del=$_POST['del'];
 			if ($del=='fair') {
@@ -190,6 +192,39 @@
 			}
 			mysqli_query($dbase,"UPDATE `matches` SET `lastover`='$lastover' WHERE `matchid`='$matchid' ");
 		}
+
+		if (isset($_POST['correct'])) {
+			$values=explode(',',$_COOKIE['lastball']);
+			$runs=$values[0];
+			$over=$values[1];
+			$wicket=$values[2];
+			$lastover=$values[3];
+			if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
+				if ($inn=='i1' ) {
+					mysqli_query($dbase,"UPDATE `matches` SET `runteama`='$runs' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `wicteama`='$wicket' WHERE `matchid`='$matchid' ");
+				}
+				else if ($inn=='i2') {
+					mysqli_query($dbase,"UPDATE `matches` SET `runteamb`='$runs' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `overteama`='$over' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `wicteamb`='$wicket' WHERE `matchid`='$matchid' ");
+				}
+			}
+			elseif (($twint==$teama && $res==0) || ($twint==$teamb && $res==1)) {
+				if ($inn=='i1' ) {
+					mysqli_query($dbase,"UPDATE `matches` SET `runteamb`='$runs' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `overteama`='$over' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `wicteamb`='$wicket' WHERE `matchid`='$matchid' ");
+				}
+				else if ($inn=='i2') {
+					mysqli_query($dbase,"UPDATE `matches` SET `runteama`='$runs' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `overteamb`='$over' WHERE `matchid`='$matchid' ");
+					mysqli_query($dbase,"UPDATE `matches` SET `wicteama`='$wicket' WHERE `matchid`='$matchid' ");
+				}
+			}
+			mysqli_query($dbase,"UPDATE `matches` SET `lastover`='$lastover' WHERE `matchid`='$matchid' ");
+		}
 	}
 ?>
 <!DOCTYPE html>
@@ -258,7 +293,7 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						<?php echo substr($lastover,1); ?>
+						<?php echo substr($lastover,1)?>
 					</td>
 				</tr>
 			</table>
@@ -292,7 +327,7 @@
 						<td colspan="2"><input type="submit" name="update" value="Update" class="submitb"></td>
 					</tr>
 					<tr>
-						<td colspan="2"><div id="correctDiv">Need Correction</div></td>
+						<td colspan="2"><input type="submit" name="correct" value="Need Correction" class="submitb"></td>
 					</tr>
 				</table>
 			</form>

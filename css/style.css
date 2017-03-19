@@ -194,7 +194,7 @@ span.errorst::after,span.errorstc::after{
 	left: 0;
 	width: 100%;
 	height: 100vh;
-	background-color: rgba(0,0,0,0.75);
+	background-color: rgba(0,0,0,0.8);
 }
 
 #userScoreTable{
@@ -404,6 +404,22 @@ td.starttd{
 	padding-bottom: 20px;
 }
 
+.pastScoreTable{
+	width: 500px;
+	color: white;
+	font-size: 20px;
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 20px;
+	text-align: center;
+	border-collapse: collapse;
+	border: 1px solid white;
+}
+
+.pastScoreTable td{
+	padding: 10px;
+}
+
 }
 
 @media(max-width: 966px)
@@ -535,6 +551,22 @@ td.starttd{
 .teamc option{
 	background: transparent;
 	color: black;
+}
+
+.pastScoreTable{
+	width: 300px;
+	color: white;
+	font-size: 20px;
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 20px;
+	text-align: center;
+	border-collapse: collapse;
+	border: 1px solid white;
+}
+
+.pastScoreTable td{
+	padding: 10px;
 }
 
 }
