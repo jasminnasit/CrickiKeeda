@@ -36,7 +36,7 @@
 					}
 					$cookie=$twint.'i1'.$res;
 					$matchid=$_COOKIE['adminbro'];
-					mysqli_query($dbase,"INSERT INTO matches (`matchid`,`teama`,`teamb`,`runteama`,`runteamb`,`overteama`,`overteamb`,`wicteama`,`wicteamb`,`completed`,`news`) VALUES ('$matchid','$teama','$teamb','0','0','0.0','0.0','0','0','0','$cookie')");
+					mysqli_query($dbase,"INSERT INTO matches (`matchid`,`teama`,`teamb`,`runteama`,`runteamb`,`overteama`,`overteamb`,`wicteama`,`wicteamb`,`completed`,`news`,`lastover`) VALUES ('$matchid','$teama','$teamb','0','0','0.0','0.0','0','0','0','$cookie','n')");
 					setcookie('matchStarted',$cookie,time()+2*60*60);
 					header('Location:admin.php');
 				}

@@ -8,6 +8,10 @@ body{
 	font-family: 'Montserrat', sans-serif;
 }
 
+#lastover{
+	font-size: 10px;
+}
+
 .mainBack{
 	position: fixed;
 	width: 100%;
@@ -194,7 +198,7 @@ span.errorst::after,span.errorstc::after{
 }
 
 #userScoreTable{
-	width: 287px;
+	width: 328px;
 	display: block;
 	margin: 0 auto;
 	color: white;
@@ -208,6 +212,7 @@ span.errorst::after,span.errorstc::after{
 	font-size: 25px;
 	opacity: 0.9;
 	padding: 20px;
+	width: 164px;
 }
 
 .matchTeam{
@@ -240,6 +245,25 @@ span.errorst::after,span.errorstc::after{
 	opacity: 0.9;
 }
 
+.button{
+	display: block;
+	margin: 0 auto;
+	margin-top: 20px;
+	border: 1px solid white;
+	border-radius: 10px;
+	text-align: center;
+	padding-top: 10px;
+	font-size: 20px;
+	color: white;
+	width: 200px;
+	height: 50px;
+	cursor: pointer;
+	background-color: rgba(0,0,0,0.8);
+}
+
+.button:hover{
+	box-shadow: 2px 2px 5px rgba(255,255,255,0.5);
+}
 
 /*admin edit*/
 @media(min-width: 967px)
@@ -262,23 +286,23 @@ span.errorst::after,span.errorstc::after{
 }
 
 .col-5{
-	width: 41.667%;
+	width: 40%;
 }
 
 .col-7{
-	width: 58.333%;
+	width: 60%;
 }
 
 #scoreAdminTable{
 	color: white;
-	font-size: 25px;
+	font-size: 20px;
 	opacity: 0.9;
 }
 
 #scoreAdminTable td{
 	padding: 15px;
-	padding-top: 17px;
-	padding-bottom: 17px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 #update{
@@ -328,7 +352,7 @@ span.errorst::after,span.errorstc::after{
 
 .startContainer{
 	width: 50%;
-	max-height: 1000px;
+	max-height: 1500px;
 	border: 2px solid white;
 	position: absolute;
 	z-index: 2;
@@ -336,6 +360,7 @@ span.errorst::after,span.errorstc::after{
 	left: 25%;
 	box-shadow: 3px 3px 30px #fff;
 	margin-bottom: 20px;
+	padding-bottom: 20px;
 }
 
 #startTable{
@@ -364,6 +389,19 @@ td.starttd{
 .teamc option{
 	background: transparent;
 	color: black;
+}
+
+.userTable{
+	width: 50%;
+	max-height: 1500px;
+	border: 2px solid white;
+	position: absolute;
+	z-index: 2;
+	top: 20vh;
+	left: 25%;
+	box-shadow: 3px 3px 30px #fff;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
 }
 
 }
@@ -460,7 +498,7 @@ td.starttd{
 
 .startContainer{
 	width: 96%;
-	max-height: 1000px;
+	max-height: 1500px;
 	border: 2px solid white;
 	position: absolute;
 	z-index: 2;
@@ -468,6 +506,7 @@ td.starttd{
 	left: 2%;
 	box-shadow: 3px 3px 30px #fff;
 	margin-bottom: 20px;
+	padding-bottom: 20px;
 }
 
 #startTable{

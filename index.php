@@ -28,6 +28,7 @@ if ($matchid=='')
 		$over='-';
 		$wicket='-';	
 		$sec="60*60";
+		$lastover='-';
 	}
 }
 else
@@ -44,12 +45,12 @@ else
 			$result='bat';
 		}
 		$print1="$twint won the toss and choose to $result first\n";
-		$batting="Now Batting : $teami1 Inn:1";
+		$batting="Now Batting : $teami1-->Inn:1";
 	}
 	else
 	{
 		$print1="Target : $target";
-		$batting="Now Batting : $teami2 Inn:2";
+		$batting="Now Batting : $teami2-->Inn:2";
 	}
 	$teamName="$teama VS $teamb";
 }
@@ -62,6 +63,7 @@ $sec = "30";
 	<title>CrickiKeeda</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<meta http-equiv="refresh" content="<?php echo $sec?>;URL='<?php echo $page?>'">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -90,8 +92,7 @@ $sec = "30";
 				<td><?php echo $wicket; ?>/10</td>
 			</tr>
 			<tr>
-				<td>This Over : </td>
-				<td><?php echo $lastover; ?></td>
+				<td colspan="2"><?php echo "<span style='font-size:20px;'>$lastover</span>";?></td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -101,6 +102,7 @@ $sec = "30";
 				</td>
 			</tr>
 		</table>
+		<div class="button">Past Scores</div>
 	</div>
 </body>
 </html>

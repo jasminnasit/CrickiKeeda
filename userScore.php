@@ -10,6 +10,7 @@ $teamb=$teams['teamb'];
 $teama=$teams['teama'];
 $lastover=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `lastover` FROM `matches` WHERE `matchid`='$matchid'"));
 $lastover=$lastover['lastover'];
+$lastover=substr($lastover,1);
 if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
 	if ($inn=='i1' ) {
 		$teami1=$teama;

@@ -80,34 +80,59 @@
 				$runs+=$run;
 				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
 					$over+=0.5;
-					$lastover.="";
+					$lastover.="[ $run ] ";
+					$lastover[0]='n';
 				}
 				else{
+					if ($lastover[0]=='n') {
+						$lastover="c[ $run ] ";
+					}
+					else
+					{
+						$lastover.="[ $run ] ";
+					}
 					$over+=0.1;
-					$lastover.="[$run] ";
 				}
 			}
 			elseif ($del=='wide') {
 				$runs+=($run+1);
-				$lastover.="[Wd($run)] ";
-
+				if($lastover[0]=='n') {
+					$lastover="c[Wd($run)] ";
+				}
+				else
+				{
+					$lastover.="[Wd($run)] ";
+				}
 			}
 			elseif ($del=='noball') {
 				$runs+=($run+1);
-				$lastover.="[Nb($run)] ";
+				if($lastover[0]=='n') {
+					$lastover="c[Nb($run)] ";
+				}
+				else
+				{
+					$lastover.="[Nb($run)] ";
+				}
 			}
 			elseif($del=='wicket'){
 				$runs+=$run;
 				$wicket+=1;
 				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
 					$over+=0.5;
-					$lastover.="";
+					$lastover.="[W($run) ] ";
+					$lastover[0]='n';
 				}
 				else{
+					if($lastover[0]=='n') {
+						$lastover="c[W($run) ] ";
+					}
+					else
+					{
+						$lastover.="[W($run) ] ";
+					}	
 					$over+=0.1;
-					$lastover.="[W($run)] ";
 				}
-				
+							
 			}
 			if (($twint==$teama && $res==1) || ($twint==$teamb && $res==0)) {
 				if ($inn=='i1' ) {
@@ -136,22 +161,23 @@
 			if (($over==12.0 || $wicket==10) && $inn=='i1') {
 				setcookie('matchStarted',$twint.'i2'.$res,time()+60*60);
 				header("Location:admin.php");
-				$lastover="";
+				$lastover="n";
 			}
 			else if(($over==12.0 || $wicket==10) && $inn=='i2')
 			{
 				if ($runs>=$target) {
 					mysqli_query($dbase,"UPDATE `matches` SET `news`='$teami2' WHERE `matchid`='$matchid' ");
+					$lastover="i2";
 				}
 				else
 				{
 					mysqli_query($dbase,"UPDATE `matches` SET `news`='$teami1' WHERE `matchid`='$matchid' ");
+					$lastover="i1";
 				}
 				mysqli_query($dbase,"UPDATE `matches` SET `completed`='1' WHERE `matchid`='$matchid' ");
 				setcookie('adminbro',$matchid+1,time()+5*22*60*60);
 				setcookie('matchStarted',0,time()-60);
 				header("Location:startMatch.php");
-				$lastover="";
 			}
 			else if(($runs>=$target) && $inn=='i2')
 			{
@@ -159,8 +185,8 @@
 				mysqli_query($dbase,"UPDATE `matches` SET `completed`='1' WHERE `matchid`='$matchid' ");
 				setcookie('adminbro',$matchid+1,time()+5*22*60*60);
 				setcookie('matchStarted',0,time()-60);
+				$lastover="i2";
 				header("Location:startMatch.php");
-				$lastover="";
 			}
 			mysqli_query($dbase,"UPDATE `matches` SET `lastover`='$lastover' WHERE `matchid`='$matchid' ");
 		}
@@ -230,6 +256,11 @@
 						</p>
 					</td>
 				</tr>
+				<tr>
+					<td colspan="2">
+						<?php echo substr($lastover,1); ?>
+					</td>
+				</tr>
 			</table>
 		</div>
 		<div class="col-7 col-m-12">
@@ -262,9 +293,6 @@
 					</tr>
 					<tr>
 						<td colspan="2"><div id="correctDiv">Need Correction</div></td>
-					</tr>
-					<tr>
-						<td colspan="2"><div id="correctDiv">New Match</div></td>
 					</tr>
 				</table>
 			</form>
