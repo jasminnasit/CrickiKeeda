@@ -1,10 +1,10 @@
 <?php
 $dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
-$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `matchid` FROM `matches` WHERE `completed`='0'"));
+$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `matchid` FROM `matches` WHERE `completed` LIKE '0__'"));
 $matchid=$matchid['matchid'];
 if ($matchid=='') 
 {
-	$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT max(`matchid`) FROM `matches` WHERE `completed`='1'"));
+	$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT max(`matchid`) FROM `matches` WHERE `completed` = '1'"));
 	$matchid=$matchid['max(`matchid`)'];
 	if ($matchid=='') {
 		$print1='Try Again Later!';
@@ -13,6 +13,7 @@ if ($matchid=='')
 		$runs='-';
 		$over='-';
 		$wicket='-';	
+		$lastover='-';
 	}
 	else{
 		$teama=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `teama` FROM `matches` WHERE `matchid`='$matchid'"));
@@ -92,7 +93,38 @@ $sec = "30";
 				<td><?php echo $wicket; ?>/10</td>
 			</tr>
 			<tr>
-				<td colspan="2"><?php echo "<span style='font-size:20px;'>$lastover</span>";?></td>
+					<td colspan="2">
+						<?php
+						$bat1=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runs`,`inballs`,`pname` FROM `scores` NATURAL JOIN `players` WHERE `status`='11' AND `matchid`='$matchid'"));
+						$name=$bat1['pname'];
+						$runs=$bat1['runs'];
+						$inballs=$bat1['inballs'];
+						echo "Batting* : $name --> $runs($inballs)";
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<?php
+						$bat2=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runs`,`inballs`,`pname` FROM `scores` NATURAL JOIN `players` WHERE `status`='10' AND `matchid`='$matchid'"));
+						$name=$bat2['pname'];
+						$runs=$bat2['runs'];
+						$inballs=$bat2['inballs'];
+						echo "Batting : $name --> $runs($inballs)";
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<?php
+						$bowl=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname` FROM `scores` NATURAL JOIN `players` WHERE `status`='01' AND `matchid`='$matchid'"));
+						$bowl=$bowl['pname'];
+						echo "Bowling : $bowl";
+						?>
+					</td>
+				</tr>
+			<tr>
+				<td colspan="2" id="lastover"><?php echo "<span style='font-size:20px;'>$lastover</span>";?></td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -102,7 +134,9 @@ $sec = "30";
 				</td>
 			</tr>
 		</table>
+		<div class="button" onclick="location.href='liveSum.php'">Live Match Summary</div>
 		<div class="button" onclick="location.href='pastScore.php'">Past Scores</div>
 	</div>
 </body>
 </html>
+<script type="text/javascript" src='js/push.min.js'></script>

@@ -59,7 +59,11 @@
 						<td>$teama VS $teamb</td>
 					</tr>
 					<tr>
-						<td colspan='2'>$result</td>
+						<form action='summary.php' method='post'>
+							<input type='hidden' name='matchid' value='$matchids'>
+							<td><input type='submit' value='More' name='getsum'></td>
+						</form>
+						<td>$result</td>
 					</tr>";
 				}
 			?>

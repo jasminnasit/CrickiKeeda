@@ -7,41 +7,49 @@ body{
 	padding: 0px;
 	font-family: 'Montserrat', sans-serif;
 }
-
-.search{
-	background: transparent;
-	border: 2px solid white;
-	color: white;
-	width: 90%;
-	display: block;
-	padding: 10px;
-	margin: 0 auto;
-	margin-top: 20px;
-	font-size: 20px;
-}
-
-#block{
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	background-color: rgba(0,0,0,0.95);
-	z-index: 99;
-}
-
-#openerTable{
-	position: absolute;
-	top: 40vh;
-	width: 100%;
-	z-index: 100;
-	color: white;
-	font-size: 30px;
-}
-
-#openerTable td{
+.err {
+	
+	position: relative;
+	background: red;
+	width: 60%;
 	text-align: center;
-	width: 50%;
+	font-size: 12px;
+	border-radius: 5px;
+}
+.err:after {
+	content: '';
+	 
+	position: absolute;
+	left: 45%;
+	top: 100%;
+	border-top: 7px solid white;
+	border-right: 10px solid transparent;
+	border-bottom: 0 solid transparent;
+	border-left: 10px solid transparent;
+}
+
+td{
+	text-align: center;
+}
+#logTable{
+	margin: 0 auto;
+}
+
+@media(min-width: 321px) and (max-width: 413px)
+{
+	#logTable{
+		width: 100%;
+	}
+}
+
+@media(max-width: 321px)
+{
+	.err{
+		font-size: 10px;
+	}
+	#logTable{
+		width: 100%;
+	}
 }
 
 #lastover{
@@ -68,7 +76,7 @@ body{
 	left: 0;
 	width: 100%;
 	height: 100vh;
-	background-color: rgba(0,0,0,0.9);
+	background-color: rgba(0,0,0,0.75);
 }
 
 #loginPannel{
@@ -181,6 +189,27 @@ span.errors::after{
 	left: 120px;
 }
 
+span.errorst,span.errorstc{
+	color: white;
+	display: block;
+	background-color: rgba(244,67,54,0.8);
+	border-radius: 5px;
+	width: 200px;
+	text-align: center;
+	margin-top: 10px;
+	position: relative;
+}
+
+span.errorst::after,span.errorstc::after{
+	content: "";
+	border-width: 5px;
+	border-style: solid;
+	border-color: rgba(244,67,54,0.8) transparent transparent transparent;
+	position: absolute;
+	top: 19px;
+	left: 95px;
+}
+
 .logged{
 	color: #ffbe00;
 	display: block;
@@ -209,11 +238,11 @@ span.errors::after{
 	left: 0;
 	width: 100%;
 	height: 100vh;
-	background-color: rgba(0,0,0,0.9);
+	background-color: rgba(0,0,0,0.8);
 }
 
 #userScoreTable{
-	width: 310px;
+	width: 328px;
 	display: block;
 	margin: 0 auto;
 	color: white;
@@ -224,10 +253,10 @@ span.errors::after{
 
 #userScoreTable td{
 	color: white;
-	font-size: 20px;
+	font-size: 25px;
 	opacity: 0.9;
 	padding: 20px;
-	width: 155px;
+	width: 164px;
 }
 
 .matchTeam{
@@ -271,35 +300,19 @@ span.errors::after{
 	font-size: 20px;
 	color: white;
 	width: 200px;
-	max-height: 150px;
+	height: 50px;
 	cursor: pointer;
 	background-color: rgba(0,0,0,0.8);
-	padding-bottom: 10px;
 }
 
 .button:hover{
 	box-shadow: 2px 2px 5px rgba(255,255,255,0.5);
 }
 
-.selectplTable{
-	width: 90%;
-	border: 1px solid white;
-	border-collapse: collapse;
-	text-align: center;
-	color: white;
-	margin: 0 auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
-}
-
-.selectplTable td{
-	padding: 10px;
-}
-
 /*admin edit*/
 @media(min-width: 967px)
 {
-.scoreEdit{
+#scoreEdit{
 	width: 66%;
 	max-height: 1000px;
 	position: absolute;
@@ -309,7 +322,6 @@ span.errors::after{
 	z-index: 2;
 	box-shadow: 3px 3px 30px #fff;
 	margin-bottom: 20px;
-	padding-bottom: 20px;
 }
 
 .myrow{
@@ -323,10 +335,6 @@ span.errors::after{
 
 .col-7{
 	width: 60%;
-}
-
-.col-6{
-	width: 50%;
 }
 
 #scoreAdminTable{
@@ -388,7 +396,7 @@ span.errors::after{
 
 .startContainer{
 	width: 50%;
-	max-height: 5500px;
+	max-height: 1500px;
 	border: 2px solid white;
 	position: absolute;
 	z-index: 2;
@@ -443,7 +451,7 @@ td.starttd{
 .pastScoreTable{
 	width: 500px;
 	color: white;
-	font-size: 17px;
+	font-size: 20px;
 	margin: 0 auto;
 	margin-top: 20px;
 	padding: 20px;
@@ -460,16 +468,15 @@ td.starttd{
 
 @media(max-width: 966px)
 {
-.scoreEdit{
+#scoreEdit{
 	width: 96%;
-	max-height: 2000px;
+	max-height: 1000px;
 	position: absolute;
 	top: 30vh;
 	left: 2%;
 	border: 2px solid white;
 	z-index: 2;
 	margin-bottom: 30px;
-	padding-bottom: 20px;
 }
 
 .myrow{
@@ -481,10 +488,6 @@ td.starttd{
 }
 
 .col-7{
-	width: 100%;
-}
-
-.col-mb-12{
 	width: 100%;
 }
 
@@ -515,7 +518,7 @@ td.starttd{
 
 #scoreEditTable{
 	display: block;
-	width: 244px;
+	width: 240px;
 	color: white;
 	font-size: 20px;
 	opacity: 0.9;
@@ -555,7 +558,7 @@ td.starttd{
 
 .startContainer{
 	width: 96%;
-	max-height: 5500px;
+	max-height: 1500px;
 	border: 2px solid white;
 	position: absolute;
 	z-index: 2;
@@ -597,7 +600,7 @@ td.starttd{
 .pastScoreTable{
 	width: 300px;
 	color: white;
-	font-size: 17px;
+	font-size: 20px;
 	margin: 0 auto;
 	margin-top: 20px;
 	padding: 20px;
@@ -614,16 +617,15 @@ td.starttd{
 
 @media(min-width: 612px) and (max-width: 966px)
 {
-.scoreEdit{
+#scoreEdit{
 	width: 96%;
-	max-height: 2000px;
+	max-height: 1000px;
 	position: absolute;
 	top: 20vh;
 	left: 2%;
 	border: 2px solid white;
 	z-index: 2;
 	margin-bottom: 30px;
-	padding-bottom: 20px;
 }
 }
 

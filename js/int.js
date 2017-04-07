@@ -1,9 +1,7 @@
 $(document).ready(function(){
 	$("span.errors").hide();
-	$("span.errorst").hide();
-	$("span.errorstc").hide();
-	var teamap='Team1';
-	var teambp='Team12';
+	var teamap=$("#teama").val();
+	var teambp=$("#teamb").val();
 	$("#teama").change(function(){
 		if ($("#teama").val()==$("#teamb").val()) {
 			$("span.errors").show(500);

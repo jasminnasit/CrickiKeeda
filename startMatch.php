@@ -5,21 +5,22 @@
 	else
 	{
 		if (isset($_COOKIE['matchStarted'])) {
-			header('Location:admin.php');
+			header('Location:selectpl.php');
 		}
 		else
 		{
+			$dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
+			$teams=mysqli_query($dbase,"SELECT * FROM `teams`");
+			$teams2=mysqli_query($dbase,"SELECT * FROM `teams`");
 			if (isset($_POST['submitMatch']))
 			{
-				$dbase=@mysqli_connect('localhost','root','','crickikeeda') or die("<script>alert('Sorry! Couldn\'t connect to Database')</script>");
-				$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `matchid` FROM `matches` WHERE `completed`='0'"));
+				$matchid=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `matchid` FROM `matches` WHERE `completed` LIKE '0__'"));
 				$matchid=$matchid['matchid'];
 				if ($matchid!='') {
 					$news=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `news` FROM `matches` WHERE `matchid`='$matchid'"));
 					$news=$news['news'];
 					setcookie('matchStarted',$news,time()+2*60*60);
 					setcookie('mistake','adminBewafa',time()+5);
-					//echo "<script>alert('Old Match was found!Resuming...')</script>";
 					header('Location:admin.php');
 				}
 				else
@@ -36,9 +37,10 @@
 					}
 					$cookie=$twint.'i1'.$res;
 					$matchid=$_COOKIE['adminbro'];
-					mysqli_query($dbase,"INSERT INTO matches (`matchid`,`teama`,`teamb`,`runteama`,`runteamb`,`overteama`,`overteamb`,`wicteama`,`wicteamb`,`completed`,`news`,`lastover`) VALUES ('$matchid','$teama','$teamb','0','0','0.0','0.0','0','0','0','$cookie','n')");
+					mysqli_query($dbase,"INSERT INTO matches (`matchid`,`teama`,`teamb`,`runteama`,`runteamb`,`overteama`,`overteamb`,`wicteama`,`wicteamb`,`completed`,`news`,`lastover`) VALUES ('$matchid','$teama','$teamb','0','0','0.0','0.0','0','0','000','$cookie','n')");
 					setcookie('matchStarted',$cookie,time()+2*60*60);
-					header('Location:admin.php');
+					setcookie('lastball',"0,0,0,n",time()+10*60);
+					header('Location:selectpl.php');
 				}
 			}
 		}
@@ -65,34 +67,31 @@
 			<tr>
 				<td class="starttd">
 					<select class="teamc" name="teama" id="teama">
-						<option value="Team1">Team 1</option>
-						<option value="Team2">Team 2</option>
-						<option value="Team3">Team 3</option>
-						<option value="Team4">Team 4</option>
-						<option value="Team5">Team 5</option>
-						<option value="Team6">Team 6</option>
-						<option value="Team7">Team 7</option>
-						<option value="Team8">Team 8</option>
-						<option value="Team9">Team 9</option>
-						<option value="Team10">Team 10</option>
-						<option value="Team11">Team 11</option>
-						<option value="Team12">Team 12</option>
+					<?php
+						while ($team1=mysqli_fetch_assoc($teams)) {
+							$id=$team1['tid'];
+							$name=$team1['tname'];
+							echo "<option value='$id-$name'>$id-$name</option>";
+						}
+					?>
 					</select>
 				</td>
 				<td class="starttd">
 					<select class="teamc" name="teamb" id="teamb">
-						<option value="Team1">Team 1</option>
-						<option value="Team2">Team 2</option>
-						<option value="Team3">Team 3</option>
-						<option value="Team4">Team 4</option>
-						<option value="Team5">Team 5</option>
-						<option value="Team6">Team 6</option>
-						<option value="Team7">Team 7</option>
-						<option value="Team8">Team 8</option>
-						<option value="Team9">Team 9</option>
-						<option value="Team10">Team 10</option>
-						<option value="Team11">Team 11</option>
-						<option selected value="Team12">Team 12</option>
+					<?php
+						while ($team1=mysqli_fetch_assoc($teams2)) {
+							$id=$team1['tid'];
+							$name=$team1['tname'];
+							if ($id==12) {
+								$selected="selected";
+							}
+							else
+							{
+								$selected='';
+							}
+							echo "<option value='$id-$name' $selected>$id-$name</option>";
+						}
+					?>
 					</select>
 				</td>
 			</tr>
@@ -104,8 +103,8 @@
 			<tr>
 				<td class="starttd"><p>Which Team Won Toss?</p></td>
 				<td class="starttd">
-					<input type="radio" name="twint" id="teamai" value="Team1" checked><span id="teamac">Team1</span><br>
-					<input type="radio" name="twint" id="teambi" value="Team12"><span id="teambc">Team12</span>
+					<input type="radio" name="twint" id="teamai" value="1-Team1" checked><span id="teamac">1-Team1</span><br>
+					<input type="radio" name="twint" id="teambi" value="12-Team12"><span id="teambc">12-Team12</span>
 				</td>
 			</tr>
 			<!-- <tr>
