@@ -71,6 +71,7 @@
 				$wicket=$wicket['wicteama'];
 			}
 		}
+		//echo "<script>alert('$wicket')</script>";
 		$lastover=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `lastover` FROM `matches` WHERE `matchid`='$matchid'"));
 		$lastover=$lastover['lastover'];
 		$teami1id=substr($teami1,0,strpos($teami1,'-'));
@@ -93,9 +94,14 @@
 				setcookie('striker','',time()-10*60);
 			}
 			setcookie('lastball',"$runs,$over,$wicket,$lastover",time()+10*60);
+			//echo "<script>alert('$lastball')</script>";
 			$run=$_POST['runs'];
 			$del=$_POST['del'];
-			if ($del=='fair') {
+			$wic='';
+			if (isset($_POST['wicket'])) {
+				$wic=$_POST['wicket'];
+			}
+			if ($del=='fair' && !isset($_POST['wicket'])) {
 				$runs+=$run;
 				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
 					$over+=0.5;
@@ -152,6 +158,53 @@
 				$batstrkib+=1;
 				mysqli_query($dbase,"UPDATE `scores` SET `inballs`='$batstrkib' WHERE `pid`='$batstrkid' AND `matchid`='$matchid'");
 			}
+			elseif ($del=='legby' && !isset($_POST['wicket'])) {
+				$runs+=$run;
+				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
+					$over+=0.5;
+					$lastover.="[ $run ] ";
+					$lastover[0]='n';
+					chstrike();
+					$completed[2]=0;
+					mysqli_query($dbase,"UPDATE `matches` SET `completed`='$completed' WHERE `matchid`='$matchid'");
+					setcookie('pbowler',$bowlerid,time()+10*60);
+				}
+				else{
+					if ($lastover[0]=='n') {
+						$lastover="c[ $run ] ";
+					}
+					else
+					{
+						$lastover.="[ $run ] ";
+					}
+					$over+=0.1;
+				}
+				switch ($run) {
+					case '0':
+						setcookie('playerError',$batstrkRuns.','.$batstrkib.',0,11',time()+10*60);
+						break;
+					case '1':
+						setcookie('playerError',$batstrkRuns.','.$batstrkib.',1,11',time()+10*60);
+						chstrike();
+						break;
+					case '2':
+						setcookie('playerError',$batstrkRuns.','.$batstrkib.',0,11',time()+10*60);
+						break;
+					case '3':
+						setcookie('playerError',$batstrkRuns.','.$batstrkib.',1,11',time()+10*60);
+						chstrike();
+						break;
+					case '4':
+						setcookie('playerError',$batstrkRuns.','.$batstrkib.',0,11',time()+10*60);
+						break;
+					case '6':
+						setcookie('playerError',$batstrkRuns.','.$batstrkib.',0,11',time()+10*60);
+						break;
+
+				}
+				$batstrkib+=1;
+				mysqli_query($dbase,"UPDATE `scores` SET `inballs`='$batstrkib' WHERE `pid`='$batstrkid' AND `matchid`='$matchid'");
+			}
 			elseif ($del=='wide' && $run=='0') {
 				$runs+=($run+1);
 				if($lastover[0]=='n') {
@@ -163,7 +216,7 @@
 				}
 				setcookie('playerError',$batstrkRuns.','.$batstrkib.',0,11',time()+10*60);
 			}
-			elseif ($del=='noball') {
+			elseif ($del=='noball' && !isset($_POST['wicket'])) {
 				$runs+=($run+1);
 				if($lastover[0]=='n') {
 					$lastover="c[Nb($run)] ";
@@ -205,29 +258,38 @@
 						break;
 				}
 			}
-			elseif ($del=='bold' || $del=='lbw' || $del=='caught' || $del=='stummped') {
+			if ($wic=='bold' || $wic=='lbw' || $wic=='caught' || $wic=='stummped') {
 				$wicket+=1;
-				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
-					$over+=0.5;
-					$lastover.="[$del($run)] ";
-					$lastover[0]='n';
-					$completed[2]=0;
-					mysqli_query($dbase,"UPDATE `matches` SET `completed`='$completed' WHERE `matchid`='$matchid'");
-					setcookie('pbowler',$bowlerid,time()+10*60);
+				if($lastover[0]=='n') {
+					$lastover="c[$wic] ";
 				}
-				else{
-					if($lastover[0]=='n') {
-						$lastover="c[$del($run)] ";
-					}
-					else
-					{
-						$lastover.="[$del($run)] ";
-					}	
-					$over+=0.1;
+				else
+				{
+					$lastover.="[$wic] ";
 				}
 				setcookie('playerError',$batstrkRuns.','.$batstrkib.',0,11',time()+10*60);
-				setcookie('striker',$batstrkid,time()+10*60);
-				$batstrkib+=1;
+				setcookie('striker',$batstrkid,time()+10*60);		
+				if ($del=='fair') {
+					if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
+						$over+=0.5;
+						$lastover.="[ $run ] ";
+						$lastover[0]='n';
+						$completed[2]=0;
+						mysqli_query($dbase,"UPDATE `matches` SET `completed`='$completed' WHERE `matchid`='$matchid'");
+						setcookie('pbowler',$bowlerid,time()+10*60);
+					}
+					else{
+						if ($lastover[0]=='n') {
+							$lastover="c[ $run ] ";
+						}
+						else
+						{
+							$lastover.="[ $run ] ";
+						}
+						$over+=0.1;
+					}
+					$batstrkib+=1;
+				}
 				mysqli_query($dbase,"UPDATE `scores` SET `takenby`='$bowlerid' WHERE `pid`='$batstrkid'  AND `matchid`='$matchid'");
 				mysqli_query($dbase,"UPDATE `scores` SET `inballs`='$batstrkib' WHERE `pid`='$batstrkid'  AND `matchid`='$matchid'");
 				mysqli_query($dbase,"UPDATE `scores` SET `status`='' WHERE `pid`='$batstrkid' AND `matchid`='$matchid'");
@@ -236,34 +298,24 @@
 				$bowlerwic+=1;
 				mysqli_query($dbase,"UPDATE `scores` SET `wicket`='$bowlerwic' WHERE `pid`='$bowlerid' AND `matchid`='$matchid'");	
 			}
-			elseif (explode(',', $del)[0]=="runout") {
+			elseif (explode(',', $wic)[0]=="runout") {
 				$wicket+=1;
 				$runs+=$run;
-				if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
-					$over+=0.5;
+				$batstrkRunsBackup=$batstrkRuns;
+				if ($lastover[0]=='n') {
+					$lastover="c[ runout($run) ] ";
+				}
+				else
+				{
 					$lastover.="[ runout($run) ] ";
-					$lastover[0]='n';
-					$completed[2]=0;
-					mysqli_query($dbase,"UPDATE `matches` SET `completed`='$completed' WHERE `matchid`='$matchid'");
-					setcookie('pbowler',$bowlerid,time()+10*60);
 				}
-				else{
-					if ($lastover[0]=='n') {
-						$lastover="c[ runout($run) ] ";
-					}
-					else
-					{
-						$lastover.="[ runout($run) ] ";
-					}
-					$over+=0.1;
-				}
-				$del=explode(',',$del);
-				$runoutpl=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runs`,`inballs` FROM `scores` WHERE `pid`='$del[1]' AND `matchid`='$matchid'"));
+				$wic=explode(',',$wic);
+				$runoutpl=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `runs`,`inballs` FROM `scores` WHERE `pid`='$wic[1]' AND `matchid`='$matchid'"));
 				$runoutplruns=$runoutpl['runs'];
 				$runoutplib=$runoutpl['inballs'];
 				switch ($run) {
 					case '0':
-						if ($del[1]==$batstrkid) {
+						if ($wic[1]==$batstrkid) {
 							$status='11';
 						}
 						else{
@@ -273,7 +325,7 @@
 						setcookie('playerError',$runoutplruns.','.$runoutplib.',0,'.$status,time()+10*60);
 						break;
 					case '1':
-						if ($del[1]==$batstrkid) {
+						if ($wic[1]==$batstrkid) {
 							$status='10';
 						}
 						else{
@@ -286,7 +338,7 @@
 						chstrike();
 						break;
 					case '2':
-						if ($del[1]==$batstrkid) {
+						if ($wic[1]==$batstrkid) {
 							$status='11';
 						}
 						else{
@@ -298,7 +350,7 @@
 						mysqli_query($dbase,"UPDATE `scores` SET `runs`='$batstrkRuns' WHERE `pid`='$batstrkid' AND `matchid`='$matchid'");
 						break;
 					case '3':
-						if ($del[1]==$batstrkid) {
+						if ($wic[1]==$batstrkid) {
 							$status='10';
 						}
 						else{
@@ -311,11 +363,35 @@
 						chstrike();
 						break;
 				}
-				setcookie('striker',$del[1],time()+10*60);
-				$batstrkib+=1;
+				if ($del=='legby') {
+					$batstrkRuns=$batstrkRunsBackup;
+					mysqli_query($dbase,"UPDATE `scores` SET `runs`='$batstrkRuns' WHERE `pid`='$batstrkid' AND `matchid`='$matchid'");
+				}
+				setcookie('striker',$wic[1],time()+10*60);
+				if ($del=='fair') {
+					if (intval($over*10)%5 == 0 &&  intval($over*10)%10 != 0) {
+						$over+=0.5;
+						$lastover.="[ $run ] ";
+						$lastover[0]='n';
+						$completed[2]=0;
+						mysqli_query($dbase,"UPDATE `matches` SET `completed`='$completed' WHERE `matchid`='$matchid'");
+						setcookie('pbowler',$bowlerid,time()+10*60);
+					}
+					else{
+						if ($lastover[0]=='n') {
+							$lastover="c[ $run ] ";
+						}
+						else
+						{
+							$lastover.="[ $run ] ";
+						}
+						$over+=0.1;
+					}
+					$batstrkib+=1;
+				}
 				mysqli_query($dbase,"UPDATE `scores` SET `inballs`='$batstrkib' WHERE `pid`='$batstrkid' AND `matchid`='$matchid'");
-				mysqli_query($dbase,"UPDATE `scores` SET `takenby`='$bowlerid' WHERE `pid`='$del[1]'  AND `matchid`='$matchid'");
-				mysqli_query($dbase,"UPDATE `scores` SET `status`='' WHERE `pid`='$del[1]' AND `matchid`='$matchid'");
+				mysqli_query($dbase,"UPDATE `scores` SET `takenby`='$bowlerid' WHERE `pid`='$wic[1]'  AND `matchid`='$matchid'");
+				mysqli_query($dbase,"UPDATE `scores` SET `status`='' WHERE `pid`='$wic[1]' AND `matchid`='$matchid'");
 				$completed[1]=1;
 				mysqli_query($dbase,"UPDATE `matches` SET `completed`='$completed' WHERE `matchid`='$matchid' ");
 				$bowlerwic+=1;
@@ -542,7 +618,9 @@
 			else
 			{
 				mysqli_query($dbase,"UPDATE `scores` SET `status`='11' WHERE `pid`='$bat1' AND `matchid`='$matchid'");
+				mysqli_query($dbase,"UPDATE `scores` SET `batseq`='1' WHERE `pid`='$bat1' AND `matchid`='$matchid' ");
 				mysqli_query($dbase,"UPDATE `scores` SET `status`='10' WHERE `pid`='$bat2' AND `matchid`='$matchid'");
+				mysqli_query($dbase,"UPDATE `scores` SET `batseq`='2' WHERE `pid`='$bat2' AND `matchid`='$matchid' ");
 				$completed[1]='2';
 				mysqli_query($dbase,"UPDATE `matches` SET `completed`='$completed' WHERE `matchid`='$matchid'");
 				setcookie('playerError','0-0-0',time()+10*60);
@@ -553,6 +631,16 @@
 			$bat2=$_POST['bat2'];
 			$playerError=explode(',', $_COOKIE['playerError']);
 			mysqli_query($dbase,"UPDATE `scores` SET `status`='$playerError[3]' WHERE `pid`='$bat2' AND `matchid`='$matchid'");
+			if ($inn=='i1') {
+				$batTeam=$teami1id;
+			}
+			elseif ($inn=='i2') {
+				$batTeam=$teami2id;
+			}
+			$batseq=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT MAX(`batseq`) FROM `scores` NATURAL JOIN `teamalloc` WHERE `tid`='$batTeam' AND `matchid`='$matchid'"));
+			$batseq=$batseq['MAX(`batseq`)'];
+			$batseq++;
+			mysqli_query($dbase,"UPDATE `scores` SET `batseq`='$batseq' WHERE `pid`='$bat2' ");
 			$completed[1]='2';
 			mysqli_query($dbase,"UPDATE `matches` SET `completed`='$completed' WHERE `matchid`='$matchid'");
 			if ($lastover[0]=='n') {
@@ -562,6 +650,21 @@
 		if (isset($_POST['bowler'])) {
 			$bowl=$_POST['bowl'];
 			mysqli_query($dbase,"UPDATE `scores` SET `status`='01' WHERE `pid`='$bowl' AND `matchid`='$matchid'");
+			if ($inn=='i1') {
+				$bowlTeam=$teami2id;
+			}
+			elseif ($inn=='i2') {
+				$bowlTeam=$teami1id;
+			}
+			$bowlseq=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `bowlseq` FROM `scores` WHERE `pid`='$bowl' AND `matchid`='$matchid'"));
+			$bowlseq=$bowlseq['bowlseq'];
+			if ($bowlseq=='0') {
+				$bowlseq=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT MAX(`bowlseq`) FROM `scores` NATURAL JOIN `teamalloc` WHERE `tid`='$bowlTeam' AND `matchid`='$matchid'"));
+				$bowlseq=$bowlseq['MAX(`bowlseq`)'];
+				$bowlseq++;
+				mysqli_query($dbase,"UPDATE `scores` SET `bowlseq`='$bowlseq' WHERE `pid`='$bowl' ");
+			}
+			
 			$completed[2]='1';
 			mysqli_query($dbase,"UPDATE `matches` SET `completed`='$completed' WHERE `matchid`='$matchid'");
 			$bowler=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `over` FROM `scores` WHERE `status`='01' AND `matchid`='$matchid'"));
@@ -575,6 +678,7 @@
 			$runs=$values[0];
 			$over=$values[1];
 			$wicket=$values[2];
+			//echo "<script>alert('$wicket')</script>";
 			$lastover=$values[3];
 			
 			//player error
@@ -588,6 +692,7 @@
 					chstrike();
 				}
 				$striker=$_COOKIE['striker'];
+				mysqli_query($dbase,"UPDATE `scores` SET `batseq`='' WHERE `status`='$playerError[3]' ");
 				mysqli_query($dbase,"UPDATE `scores` SET `status`='' WHERE `status`='$playerError[3]' AND `matchid`='$matchid' ");
 				mysqli_query($dbase,"UPDATE `scores` SET `status`='$playerError[3]' WHERE `pid`='$striker' AND `matchid`='$matchid' ");
 				mysqli_query($dbase,"UPDATE `scores` SET `takenby`='0' WHERE `pid`='$striker' AND `matchid`='$matchid' ");
@@ -620,11 +725,11 @@
 				if ($playerError[2]==1) {
 					chstrike();
 				}
-				$wicket=mysqli_query($dbase,"SELECT `wicket` FROM `scores` WHERE `status`='01' AND `matchid`='$matchid'");
-				$wicket=mysqli_fetch_assoc($wicket);
-				$wicket=$wicket['wicket'];
-				$wicket--;
-				mysqli_query($dbase,"UPDATE `scores` SET `wicket`='$wicket' WHERE `status`='01' AND `matchid`='$matchid'");
+				$bowlwicket=mysqli_query($dbase,"SELECT `wicket` FROM `scores` WHERE `status`='01' AND `matchid`='$matchid'");
+				$bowlwicket=mysqli_fetch_assoc($bowlwicket);
+				$bowlwicket=$bowlwicket['wicket'];
+				$bowlwicket--;
+				mysqli_query($dbase,"UPDATE `scores` SET `wicket`='$bowlwicket' WHERE `status`='01' AND `matchid`='$matchid'");
 			}
 			//echo "<script>alert('$playerError[0] $playerError[1] $playerError[2]')</script>";
 
@@ -677,6 +782,7 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+	<meta name="theme-color" content="rgba(0,0,0,0.8)" />
 </head>
 <body>
 <div class="mainBack"></div>
@@ -790,16 +896,20 @@
 						<td><label>Delivery&nbsp: </label></td>
 						<td>
 							<input type="radio" name="del" value="fair" checked>&nbspFair&nbsp<br>
-							<input type="radio" name="del" value="wide">&nbspWide&nbsp
+							<input type="radio" name="del" value="legby">&nbspLegby&nbsp<br>
+							<input type="radio" name="del" value="wide">&nbspWide&nbsp<br>
 							<input type="radio" name="del" value="noball">&nbspNo&nbspBall&nbsp<br>
-							<hr>
-							<h4>Wicket : </h4>
-							<input type="radio" name="del" value="bold">&nbspBold&nbsp<br>
-							<input type="radio" name="del" value="lbw">&nbspLBW&nbsp<br>
-							<input type="radio" name="del" value="caught">&nbspCaught!&nbsp<br>
-							<input type="radio" name="del" value="stummped">&nbspStummped&nbsp<br>RunOut : 
-							<input type="radio" name="del" value="<?php echo 'runout,'.$pid1;?>">&nbsp<?php echo $name1;?>&nbsp
-							<input type="radio" name="del" value="<?php echo 'runout,'.$pid2;?>">&nbsp<?php echo $name2;?>&nbsp
+						</td>
+					</tr>
+					<tr>
+						<td><label>Wicket Type&nbsp: </label></td>
+						<td>
+							<input type="radio" name="wicket" value="bold">&nbspBold&nbsp<br>
+							<input type="radio" name="wicket" value="lbw">&nbspLBW&nbsp<br>
+							<input type="radio" name="wicket" value="caught">&nbspCaught!&nbsp<br>
+							<input type="radio" name="wicket" value="stummped">&nbspStummped&nbsp<br>RunOut : <br>
+							<input type="radio" name="wicket" value="<?php echo 'runout,'.$pid1;?>">&nbsp<?php echo $name1.'*';?>&nbsp<br>
+							<input type="radio" name="wicket" value="<?php echo 'runout,'.$pid2;?>">&nbsp<?php echo $name2;?>&nbsp
 						</td>
 					</tr>
 					<tr>

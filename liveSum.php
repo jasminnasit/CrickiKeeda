@@ -49,6 +49,7 @@ $sec = "30";
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="refresh" content="<?php echo $sec?>;URL='<?php echo $page?>'">
+	<meta name="theme-color" content="rgba(0,0,0,0.8)" />
 </head>
 <body>
 	<div class="userBack"></div>
@@ -111,97 +112,206 @@ $sec = "30";
 		<?php
 		$teami1id=substr($teami1,0,strpos($teami1,'-'));
 		$teami2id=substr($teami2,0,strpos($teami2,'-'));
-		$playersi1Bat=mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid` IN (SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `tid`='$teami1id')");
-		$playersi2Bowl=mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid` IN (SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `tid`='$teami1id')");;
-		$playersi1Bowl=mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid` IN (SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `tid`='$teami2id')");
-		$playersi2Bat=mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid` IN (SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `tid`='$teami2id')");;
+		$playersi1Bat=mysqli_query($dbase,"SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `batseq`<>'0' AND `tid`='$teami1id' ORDER BY `batseq` ASC");
+		$playersi1Batnp=mysqli_query($dbase,"SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `batseq`='0' AND `tid`='$teami1id' ORDER BY `pid` ASC");
+		$playersi2Bowl=mysqli_query($dbase,"SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `bowlseq`<>'0' AND `tid`='$teami1id' ORDER BY `bowlseq` ASC");
+		$playersi2Bowlnp=mysqli_query($dbase,"SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `bowlseq`='0' AND `tid`='$teami1id' ORDER BY `pid` ASC");
+		$playersi1Bowl=mysqli_query($dbase,"SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `bowlseq`<>'0' AND `tid`='$teami2id' ORDER BY `bowlseq` ASC");
+		$playersi1Bowlnp=mysqli_query($dbase,"SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `bowlseq`='0' AND `tid`='$teami2id' ORDER BY `pid` ASC");
+		$playersi2Bat=mysqli_query($dbase,"SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `batseq`<>'0' AND `tid`='$teami2id' ORDER BY `batseq` ASC");
+		$playersi2Batnp=mysqli_query($dbase,"SELECT `pid` FROM `teamalloc` NATURAL JOIN `scores` WHERE `matchid`='$matchid' AND `batseq`='0' AND `tid`='$teami2id' ORDER BY `pid` ASC");
 
-		echo "<table class='pastScoreTable'><tr><td colspan='5'>Inning-1 Batting Team</td></tr><tr><td colspan='5'>$teama</td></tr><tr><th>Id</th><th>Name</th><th>Runs</th><th>Balls</th><th>Wicket By</th></tr>";
+		echo "<table class='pastScoreTable'><tr><td colspan='5'>Inning-1 Batting Team</td></tr><tr><td colspan='5'>$teama</td></tr><tr><th>Sr. No.</th><th>Name</th><th>Runs</th><th>Balls</th><th>Wicket By</th></tr>";
+		$srno=1;
 		while ($player=mysqli_fetch_assoc($playersi1Bat)) {
 			$pid=$player['pid'];
-			$pname=$player['pname'];
-			$details=mysqli_query($dbase,"SELECT `runs`,`inballs`,`takenby` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
+			$pname=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid`=$pid"));
+			$pname=$pname['pname'];
+			$details=mysqli_query($dbase,"SELECT `runs`,`inballs`,`takenby`,`batseq`,`status` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
 			$details=mysqli_fetch_assoc($details);
 			$runs=$details['runs'];
 			$inballs=$details['inballs'];
 			$takenby=$details['takenby'];
+			$batseq=$details['batseq'];
 			$bowlerName=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname` FROM `players` WHERE `pid`='$takenby'"));
 			$bowlerName=$bowlerName['pname'];
+			if ($bowlerName=='') {
+				if ($batseq!='') {
+					$bowlerName='Not Out';
+				}
+			}
 			echo "
 			<tr>
-				<td>$pid</td>
+				<td>$srno</td>
 				<td>$pname</td>
 				<td>$runs</td>
 				<td>$inballs</td>
 				<td>$bowlerName</td>
 			</tr>
 			";
+			$srno++;
+		}
+
+		while ($player=mysqli_fetch_assoc($playersi1Batnp)) {
+			$pid=$player['pid'];
+			$pname=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid`=$pid"));
+			$pname=$pname['pname'];
+			$details=mysqli_query($dbase,"SELECT `runs`,`inballs`,`takenby`,`batseq`,`status` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
+			$details=mysqli_fetch_assoc($details);
+			$runs=$details['runs'];
+			$inballs=$details['inballs'];
+			$takenby=$details['takenby'];
+			$batseq=$details['batseq'];
+			$bowlerName=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname` FROM `players` WHERE `pid`='$takenby'"));
+			$bowlerName=$bowlerName['pname'];
+			$bowlerName='-';
+			echo "
+			<tr>
+				<td>$srno</td>
+				<td>$pname</td>
+				<td>$runs</td>
+				<td>$inballs</td>
+				<td>$bowlerName</td>
+			</tr>
+			";
+			$srno++;
 		}
 		echo "</table>";
 
 		echo "<table class='pastScoreTable'><tr><td colspan='4'>Inning-1 Bowling Team</td></tr><tr><td colspan='4'>$teamb</td></tr><tr><th>Id</th><th>Name</th><th>Overs</th><th>Wickets</th></tr>";
+		$srno=1;
 		while ($player=mysqli_fetch_assoc($playersi1Bowl)) {
 			$pid=$player['pid'];
-			$pname=$player['pname'];
+			$pname=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid`=$pid"));
+			$pname=$pname['pname'];
 			$details=mysqli_query($dbase,"SELECT `over`,`wicket` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
 			$details=mysqli_fetch_assoc($details);
 			$over=$details['over'];
 			$wicket=$details['wicket'];
 			echo "
 			<tr>
-				<td>$pid</td>
+				<td>$srno</td>
 				<td>$pname</td>
 				<td>$over</td>
 				<td>$wicket</td>
 			</tr>
 			";
+			$srno++;
 		}
+
+		// while ($player=mysqli_fetch_assoc($playersi1Bowlnp)) {
+		// 	$pid=$player['pid'];
+		// 	$pname=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid`=$pid"));
+		// 	$pname=$pname['pname'];
+		// 	$details=mysqli_query($dbase,"SELECT `over`,`wicket` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
+		// 	$details=mysqli_fetch_assoc($details);
+		// 	$over=$details['over'];
+		// 	$wicket=$details['wicket'];
+		// 	echo "
+		// 	<tr>
+		// 		<td>$srno</td>
+		// 		<td>$pname</td>
+		// 		<td>$over</td>
+		// 		<td>$wicket</td>
+		// 	</tr>
+		// 	";
+		// 	$srno++;
+		// }
 		echo "</table>";
 
 
 		if ($inn=='i2') {
 			echo "<table class='pastScoreTable'><tr><td colspan='5'>Inning-2 Batting Team</td></tr><tr><td colspan='5'>$teamb</td></tr><tr><th>Id</th><th>Name</th><th>Runs</th><th>Balls</th><th>Wicket By</th></tr>";
+			$srno=1;
 			while ($player=mysqli_fetch_assoc($playersi2Bat)) {
 				$pid=$player['pid'];
-				$pname=$player['pname'];
-				$details=mysqli_query($dbase,"SELECT `runs`,`inballs`,`takenby` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
+				$pname=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid`=$pid"));
+				$pname=$pname['pname'];
+				$details=mysqli_query($dbase,"SELECT `runs`,`inballs`,`takenby`,`batseq` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
 				$details=mysqli_fetch_assoc($details);
 				$runs=$details['runs'];
 				$inballs=$details['inballs'];
 				$takenby=$details['takenby'];
 				$bowlerName=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname` FROM `players` WHERE `pid`='$takenby'"));
 				$bowlerName=$bowlerName['pname'];
+				if ($bowlerName=='') {
+					if ($batseq!='') {
+						$bowlerName='Not Out';
+					}
+				}
 				echo "
 				<tr>
-					<td>$pid</td>
+					<td>$srno</td>
 					<td>$pname</td>
 					<td>$runs</td>
 					<td>$inballs</td>
 					<td>$bowlerName</td>
 				</tr>
 				";
+				$srno++;
+			}
+			while ($player=mysqli_fetch_assoc($playersi2Batnp)) {
+				$pid=$player['pid'];
+				$pname=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid`=$pid"));
+				$pname=$pname['pname'];
+				$details=mysqli_query($dbase,"SELECT `runs`,`inballs`,`takenby`,`batseq` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
+				$details=mysqli_fetch_assoc($details);
+				$runs=$details['runs'];
+				$inballs=$details['inballs'];
+				$takenby=$details['takenby'];
+				$bowlerName='-';
+				echo "
+				<tr>
+					<td>$srno</td>
+					<td>$pname</td>
+					<td>$runs</td>
+					<td>$inballs</td>
+					<td>$bowlerName</td>
+				</tr>
+				";
+				$srno++;
 			}
 			echo "</table>";
 
 			echo "<table class='pastScoreTable'><tr><td colspan='4'>Inning-2 Bowling Team</td></tr><tr><td colspan='4'>$teama</td></tr><tr><th>Id</th><th>Name</th><th>Overs</th><th>Wickets</th></tr>";
+			$srno=1;
 			while ($player=mysqli_fetch_assoc($playersi2Bowl)) {
 				$pid=$player['pid'];
-				$pname=$player['pname'];
+				$pname=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid`=$pid"));
+				$pname=$pname['pname'];
 				$details=mysqli_query($dbase,"SELECT `over`,`wicket` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
 				$details=mysqli_fetch_assoc($details);
 				$over=$details['over'];
 				$wicket=$details['wicket'];
-
 				echo "
 				<tr>
-					<td>$pid</td>
+					<td>$srno</td>
 					<td>$pname</td>
 					<td>$over</td>
 					<td>$wicket</td>
 				</tr>
 				";
+				$srno++;
 			}
-			echo "</table>";	
+			// while ($player=mysqli_fetch_assoc($playersi2Bowlnp)) {
+			// 	$pid=$player['pid'];
+			// 	$pname=mysqli_fetch_assoc(mysqli_query($dbase,"SELECT `pname`,`pid` FROM `players` WHERE `pid`=$pid"));
+			// 	$pname=$pname['pname'];
+			// 	$details=mysqli_query($dbase,"SELECT `over`,`wicket` FROM `scores` WHERE `pid`='$pid' AND `matchid`='$matchid'") ;
+			// 	$details=mysqli_fetch_assoc($details);
+			// 	$over=$details['over'];
+			// 	$wicket=$details['wicket'];
+			// 	echo "
+			// 	<tr>
+			// 		<td>$srno</td>
+			// 		<td>$pname</td>
+			// 		<td>$over</td>
+			// 		<td>$wicket</td>
+			// 	</tr>
+			// 	";
+			// 	$srno++;
+			// }
+			echo "</table>";
 		}	
 		?>
 	</div>

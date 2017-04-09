@@ -52,6 +52,7 @@
 	<title>Start Match</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="rgba(0,0,0,0.8)" />
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
@@ -62,7 +63,7 @@
 <h1 class="titlestart">CrickiKeeda Match Selector</h1>
 <div class="startContainer">
 	<span class='errors'>Same Teams Not Allowed</span>
-	<form id="matchTeams" method="post" action="startMatch.php">
+	<form id="matchTeams" method="post" action="startMatch.php" onsubmit="return checkTeams();">
 		<table id="startTable">
 			<tr>
 				<td class="starttd">
@@ -82,7 +83,7 @@
 						while ($team1=mysqli_fetch_assoc($teams2)) {
 							$id=$team1['tid'];
 							$name=$team1['tname'];
-							if ($id==12) {
+							if ($id==2) {
 								$selected="selected";
 							}
 							else
@@ -104,7 +105,7 @@
 				<td class="starttd"><p>Which Team Won Toss?</p></td>
 				<td class="starttd">
 					<input type="radio" name="twint" id="teamai" value="1-Team1" checked><span id="teamac">1-Team1</span><br>
-					<input type="radio" name="twint" id="teambi" value="12-Team12"><span id="teambc">12-Team12</span>
+					<input type="radio" name="twint" id="teambi" value="2-Team2"><span id="teambc">2-Team2</span>
 				</td>
 			</tr>
 			<!-- <tr>
@@ -122,6 +123,11 @@
 			<tr>
 				<td class="starttd" colspan="2">
 					<input type="submit" name="submitMatch" value="Start" class="submitb">
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<button type="button" class="submitb" onclick="location.href='teamregister.php'">Register Team</button>
 				</td>
 			</tr>
 		</table>

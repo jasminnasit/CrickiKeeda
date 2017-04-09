@@ -31,3 +31,13 @@ $(document).ready(function(){
 	});
 
 });
+
+function checkTeams(){
+	if ($("#teama").val()==$("#teamb").val()) {
+		$("span.errors").show(500);
+		return false;
+	}
+	else{
+		return true;
+	}
+}

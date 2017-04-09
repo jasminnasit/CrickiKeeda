@@ -68,6 +68,7 @@ $sec = "30";
 	<meta http-equiv="refresh" content="<?php echo $sec?>;URL='<?php echo $page?>'">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="rgba(0,0,0,0.8)" />
 </head>
 <body>
 	<div class="userBack"></div>
@@ -75,11 +76,15 @@ $sec = "30";
 	<h1 class="title">CrickiKeeda Score Table</h1>
 	<div class="startContainer">
 		<h2 class="matchTeam"><?php echo $teamName; ?></h2>
+		<i class="fa fa-refresh"></i>
 		<h2 class="matchTeam2">
 			<?php echo $print1; ?>
 		</h2>
 		<h2 class="matchTeam3"><?php echo $batting; ?></h2>
 		<table id="userScoreTable">
+			<tr>
+				<td colspan="2"><button type="button" onclick="location.href='index.php'" class="button">Refresh <i class="fa fa-refresh"></i></button></td>
+			</tr>
 			<tr>
 				<td>Runs : </td>
 				<td><?php echo $runs; ?></td>
@@ -126,16 +131,11 @@ $sec = "30";
 			<tr>
 				<td colspan="2" id="lastover"><?php echo "<span style='font-size:20px;'>$lastover</span>";?></td>
 			</tr>
-			<tr>
-				<td colspan="2">
-				<form action="index.php" method="post">
-					<input type="submit" name="scoreup" class="submitb" value="Refresh" style="background-color: rgba(0,0,0,0.8);" >
-				</form>
-				</td>
-			</tr>
 		</table>
-		<div class="button" onclick="location.href='liveSum.php'">Live Match Summary</div>
+		<div class="button" onclick="location.href='liveSum.php'">Match Summary</div>
 		<div class="button" onclick="location.href='pastScore.php'">Past Scores</div>
+		<div class="button" onclick="location.href='batLeader.php'">Batsman Leaderboard</div>
+		<div class="button" onclick="location.href='bowlLeader.php'">Bowler Leaderboard</div>
 	</div>
 </body>
 </html>

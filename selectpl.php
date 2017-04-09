@@ -28,10 +28,10 @@
 			$playersa=$_POST['playersa'];
 			$playersb=$_POST['playersb'];
 			foreach ($playersa as $player) {
-				mysqli_query($dbase,"INSERT INTO `scores` VALUES ('$matchid','$player','0','0','0','0','','')") or die();
+				mysqli_query($dbase,"INSERT INTO `scores` VALUES ('$matchid','$player','0','0','0','0','','','','')") or die();
 			}
 			foreach ($playersb as $player) {
-				mysqli_query($dbase,"INSERT INTO `scores` VALUES ('$matchid','$player','0','0','0','0','','')");
+				mysqli_query($dbase,"INSERT INTO `scores` VALUES ('$matchid','$player','0','0','0','0','','','','')");
 			}
 			header("Location:admin.php");
 		}
@@ -46,6 +46,7 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+	<meta name="theme-color" content="rgba(0,0,0,0.8)" />
 </head>
 <body>
 <div class="mainBack"></div>

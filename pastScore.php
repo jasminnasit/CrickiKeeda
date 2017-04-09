@@ -8,6 +8,7 @@
 	<meta http-equiv="refresh" content="<?php echo $sec?>;URL='<?php echo $page?>'">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="rgba(0,0,0,0.8)" />
 </head>
 <body>
 	<div class="userBack"></div>
